@@ -5,6 +5,12 @@ class NeuralNetwork:
         self.output_nodes = output_nodes
         self.learning_rate = learning_rate
 
+    def train(self):
+        pass
+
+    def query(self):
+        pass
+
 
 def main():
     input_nodes = 3
