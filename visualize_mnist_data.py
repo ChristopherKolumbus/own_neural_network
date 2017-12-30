@@ -12,8 +12,8 @@ def main():
         file_reader = csv.reader(file_object, delimiter=',')
         all_data = list(file_reader)
     data = all_data[3]
-    image_array = np.array(data[1:], dtype=float).reshape((28, 28))
-    plt.imshow(image_array, cmap='Greys', interpolation='None')
+    image = np.array(data[1:], dtype=float).reshape((28, 28))
+    plt.imshow(image, cmap='Greys', interpolation='None')
     plt.show()
 
 
