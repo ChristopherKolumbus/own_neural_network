@@ -1,3 +1,5 @@
+import csv
+
 import numpy as np
 from scipy import special
 
@@ -37,13 +39,26 @@ class NeuralNetwork:
 
 
 def main():
-    input_nodes = 3
-    hidden_nodes = 3
-    output_nodes = 3
+    # Specify number of input, hidden and output nodes:
+    input_nodes = 784
+    hidden_nodes = 100
+    output_nodes = 10
+    # Learning rate of neural network:
     learning_rate = 0.3
+    # Create neural network instance:
     neural_network = NeuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate)
-    print(neural_network.query([1.0, 0.5, -1.5]))
-
+    # Load mnist training data from CSV file into list:
+    with open(r'..\..\google_drive\python_data\mnist_data\mnist_train_100.csv', 'r') as training_data_file:
+        training_data_file_reader = csv.reader(training_data_file, delimiter=',')
+        training_data_list = list(training_data_file_reader)
+    # Train neural network:
+    for record in training_data_list:
+        # Scale and shift the inputs:
+        inputs = np.array(record[1:], dtype=float) / 255 * 0.99 + 0.01
+        # Create target output values (all 0.01 expect desired label which is 0.99):
+        targets = np.zeros(output_nodes) + 0.01
+        targets[int(record[0])] = 0.99
+        neural_network.train(inputs, targets)
 
 if __name__ == '__main__':
     main()
