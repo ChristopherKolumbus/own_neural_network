@@ -54,7 +54,7 @@ def prepare_inputs(record):
 
 
 def train_neural_network(neural_network, output_nodes, training_data_path):
-    # Load mnist training data from CSV file into list:
+    # Load mnist training data from CSV file:
     with open(training_data_path, 'r') as training_data_file:
         training_data_file_reader = csv.reader(training_data_file, delimiter=',')
         for record in training_data_file_reader:
@@ -65,6 +65,23 @@ def train_neural_network(neural_network, output_nodes, training_data_path):
             targets[int(record[0])] = 0.99
             # Train neural network:
             neural_network.train(inputs, targets)
+
+
+def test_neural_network(neural_network, test_data_path):
+    # Load mnist test data from CSV file:
+    with open(test_data_path, 'r') as test_data_file:
+        test_data_file_reader = csv.reader(test_data_file, delimiter=',')
+        score_card = []
+        for record in test_data_file_reader:
+            correct_label = int(record[0])
+            inputs = prepare_inputs(record)
+            label = np.argmax(neural_network.query(inputs))
+            if label == correct_label:
+                score_card.append(1)
+            else:
+                score_card.append(0)
+        score_card_array = np.array(score_card)
+        print('Performance = ', score_card_array.sum() / score_card_array.size)
 
 
 def main():
@@ -78,21 +95,10 @@ def main():
     neural_network = NeuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate)
     # Train neural network:
     data_folder = r'..\..\google_drive\python_data\mnist_data'
-    train_neural_network(neural_network, output_nodes, os.path.join(data_folder, 'mnist_train_100.csv'))
-    # Load mnist test data from CSV file into list:
-    with open(os.path.join(data_folder, 'mnist_test_10.csv'), 'r') as test_data_file:
-        test_data_file_reader = csv.reader(test_data_file, delimiter=',')
-        score_card = []
-        for record in test_data_file_reader:
-            correct_label = int(record[0])
-            inputs = prepare_inputs(record)
-            label = np.argmax(neural_network.query(inputs))
-            if label == correct_label:
-                score_card.append(1)
-            else:
-                score_card.append(0)
-        score_card_array = np.array(score_card)
-        print('Performance = ', score_card_array.sum() / score_card_array.size)
+    train_neural_network(neural_network, output_nodes, os.path.join(data_folder, 'mnist_train.csv'))
+    # Test neural network:
+    test_neural_network(neural_network, os.path.join(data_folder, 'mnist_test.csv'))
+
 
 if __name__ == '__main__':
     main()
