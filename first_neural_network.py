@@ -14,8 +14,6 @@ class NeuralNetwork:
         self.output_nodes = output_nodes
         self.weights_ih = np.random.normal(0.0, pow(self.hidden_nodes, -0.5), (self.hidden_nodes, self.input_nodes))
         self.weights_ho = np.random.normal(0.0, pow(self.output_nodes, -0.5), (self.output_nodes, self.hidden_nodes))
-        # self.weights_ih = np.random.rand(self.hidden_nodes, self.input_nodes) - 0.5
-        # self.weights_ho = np.random.rand(self.output_nodes, self.hidden_nodes) - 0.5
         self.lr = learning_rate
 
     def train(self, inputs_list, targets_list):
@@ -99,12 +97,12 @@ def test_neural_network(neural_network, test_data_path):
 def main():
     # Specify number of input, hidden and output nodes:
     input_nodes = 784
-    hidden_nodes = 100
+    hidden_nodes = 200
     output_nodes = 10
     # Learning rate of neural network:
-    learning_rate = 0.2
+    learning_rate = 0.1
     # Number of epochs:
-    epochs = 2
+    epochs = 5
     # Create neural network instance:
     neural_network = NeuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate)
     # Train neural network:
