@@ -1,6 +1,7 @@
 import csv
 import os
 import time
+import shelve
 
 import numpy as np
 from scipy import special
@@ -39,6 +40,16 @@ class NeuralNetwork:
     @staticmethod
     def activation_function(x):
         return special.expit(x)
+
+    def save_weights(self):
+        with shelve.open('neural_network_weights') as weights_shelve:
+            weights_shelve['weights_input_hidden'] = self.weights_ih
+            weights_shelve['weights_hidden_output'] = self.weights_ho
+
+    def load_weights(self):
+        with shelve.open('neural_network_weights') as weights_shelve:
+            self.weights_ih = weights_shelve['weights_input_hidden']
+            self.weights_ho = weights_shelve['weights_hidden_output']
 
 
 def visualize_number(record):
@@ -108,6 +119,8 @@ def main():
     # Train neural network:
     data_folder = r'..\..\google_drive\python_data\mnist_data'
     train_neural_network(neural_network, output_nodes, epochs, os.path.join(data_folder, 'mnist_train.csv'))
+    # Save weights:
+    neural_network.save_weights()
     # Test neural network:
     test_neural_network(neural_network, os.path.join(data_folder, 'mnist_test.csv'))
 
