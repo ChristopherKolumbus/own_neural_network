@@ -53,6 +53,21 @@ def prepare_inputs(record):
     return np.array(record[1:], dtype=float) / 255 * 0.99 + 0.01
 
 
+def train_neural_network(neural_network, output_nodes, training_data_path):
+    # Load mnist training data from CSV file into list:
+    with open(training_data_path, 'r') as training_data_file:
+        training_data_file_reader = csv.reader(training_data_file, delimiter=',')
+        training_data_list = list(training_data_file_reader)
+        for record in training_data_list:
+            # Scale and shift the inputs:
+            inputs = prepare_inputs(record)
+            # Create target output values (all 0.01 expect desired label which is 0.99):
+            targets = np.zeros(output_nodes) + 0.01
+            targets[int(record[0])] = 0.99
+            # Train neural network:
+            neural_network.train(inputs, targets)
+
+
 def main():
     # Specify number of input, hidden and output nodes:
     input_nodes = 784
@@ -62,19 +77,9 @@ def main():
     learning_rate = 0.3
     # Create neural network instance:
     neural_network = NeuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate)
-    # Load mnist training data from CSV file into list:
-    data_folder = r'..\..\google_drive\python_data\mnist_data'
-    with open(os.path.join(data_folder, 'mnist_train_100.csv'), 'r') as training_data_file:
-        training_data_file_reader = csv.reader(training_data_file, delimiter=',')
-        training_data_list = list(training_data_file_reader)
     # Train neural network:
-    for record in training_data_list:
-        # Scale and shift the inputs:
-        inputs = prepare_inputs(record)
-        # Create target output values (all 0.01 expect desired label which is 0.99):
-        targets = np.zeros(output_nodes) + 0.01
-        targets[int(record[0])] = 0.99
-        neural_network.train(inputs, targets)
+    data_folder = r'..\..\google_drive\python_data\mnist_data'
+    train_neural_network(neural_network, output_nodes, os.path.join(data_folder, 'mnist_train_100.csv'))
     # Load mnist test data from CSV file into list:
     with open(os.path.join(data_folder, 'mnist_test_10.csv'), 'r') as test_data_file:
         test_data_file_reader = csv.reader(test_data_file, delimiter=',')
