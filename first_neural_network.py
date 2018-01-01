@@ -82,13 +82,17 @@ def main():
     # Load mnist test data from CSV file into list:
     with open(os.path.join(data_folder, 'mnist_test_10.csv'), 'r') as test_data_file:
         test_data_file_reader = csv.reader(test_data_file, delimiter=',')
-        test_data_list = list(test_data_file_reader)
-    # Test neural network:
-    record = test_data_list[3]
-    visualize_number(record)
-    output_outputs = neural_network.query(prepare_inputs(record))
-    print(output_outputs)
-
+        score_card = []
+        for record in test_data_file_reader:
+            correct_label = int(record[0])
+            inputs = prepare_inputs(record)
+            label = np.argmax(neural_network.query(inputs))
+            if label == correct_label:
+                score_card.append(1)
+            else:
+                score_card.append(0)
+        score_card_array = np.array(score_card)
+        print('Performance = ', score_card_array.sum() / score_card_array.size)
 
 if __name__ == '__main__':
     main()
