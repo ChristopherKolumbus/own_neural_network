@@ -54,23 +54,24 @@ def prepare_inputs(record):
     return np.array(record[1:], dtype=float) / 255 * 0.99 + 0.01
 
 
-def train_neural_network(neural_network, output_nodes, training_data_path):
-    print('Training neural network...')
-    t0 = time.time()
-    # Load mnist training data from CSV file:
-    with open(training_data_path, 'r') as training_data_file:
-        training_data_file_reader = csv.reader(training_data_file, delimiter=',')
-        for record in training_data_file_reader:
-            # Scale and shift the inputs:
-            inputs = prepare_inputs(record)
-            # Create target output values (all 0.01 expect desired label which is 0.99):
-            targets = np.zeros(output_nodes) + 0.01
-            targets[int(record[0])] = 0.99
-            # Train neural network:
-            neural_network.train(inputs, targets)
-        t1 = time.time()
-        total = t1 - t0
-        print(f'Done! ({total} s)')
+def train_neural_network(neural_network, output_nodes, epochs, training_data_path):
+    for epoch in range(epochs):
+        print(f'Training neural network (epoch {epoch + 1}/{epochs})...')
+        t0 = time.time()
+        # Load mnist training data from CSV file:
+        with open(training_data_path, 'r') as training_data_file:
+            training_data_file_reader = csv.reader(training_data_file, delimiter=',')
+            for record in training_data_file_reader:
+                # Scale and shift the inputs:
+                inputs = prepare_inputs(record)
+                # Create target output values (all 0.01 expect desired label which is 0.99):
+                targets = np.zeros(output_nodes) + 0.01
+                targets[int(record[0])] = 0.99
+                # Train neural network:
+                neural_network.train(inputs, targets)
+            t1 = time.time()
+            total = t1 - t0
+            print(f'Done! (epoch {epoch + 1}/{epochs}; {total}s)')
 
 
 def test_neural_network(neural_network, test_data_path):
@@ -92,7 +93,7 @@ def test_neural_network(neural_network, test_data_path):
         performance = score_card_array.sum() / score_card_array.size
         t1 = time.time()
         total = t1 - t0
-        print(f'Done! ({total} s)\nPerformance = {performance}')
+        print(f'Done! ({total}s)\nPerformance = {performance}')
 
 
 def main():
@@ -101,12 +102,14 @@ def main():
     hidden_nodes = 100
     output_nodes = 10
     # Learning rate of neural network:
-    learning_rate = 0.3
+    learning_rate = 0.2
+    # Number of epochs:
+    epochs = 2
     # Create neural network instance:
     neural_network = NeuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate)
     # Train neural network:
     data_folder = r'..\..\google_drive\python_data\mnist_data'
-    train_neural_network(neural_network, output_nodes, os.path.join(data_folder, 'mnist_train.csv'))
+    train_neural_network(neural_network, output_nodes, epochs, os.path.join(data_folder, 'mnist_train.csv'))
     # Test neural network:
     test_neural_network(neural_network, os.path.join(data_folder, 'mnist_test.csv'))
 
