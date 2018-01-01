@@ -1,5 +1,6 @@
 import csv
 import os
+import time
 
 import numpy as np
 from scipy import special
@@ -54,6 +55,8 @@ def prepare_inputs(record):
 
 
 def train_neural_network(neural_network, output_nodes, training_data_path):
+    print('Training neural network...')
+    t0 = time.time()
     # Load mnist training data from CSV file:
     with open(training_data_path, 'r') as training_data_file:
         training_data_file_reader = csv.reader(training_data_file, delimiter=',')
@@ -65,9 +68,14 @@ def train_neural_network(neural_network, output_nodes, training_data_path):
             targets[int(record[0])] = 0.99
             # Train neural network:
             neural_network.train(inputs, targets)
+        t1 = time.time()
+        total = t1 - t0
+        print(f'Done! ({total} s)')
 
 
 def test_neural_network(neural_network, test_data_path):
+    print('Testing neural network...')
+    t0 = time.time()
     # Load mnist test data from CSV file:
     with open(test_data_path, 'r') as test_data_file:
         test_data_file_reader = csv.reader(test_data_file, delimiter=',')
@@ -81,7 +89,10 @@ def test_neural_network(neural_network, test_data_path):
             else:
                 score_card.append(0)
         score_card_array = np.array(score_card)
-        print('Performance = ', score_card_array.sum() / score_card_array.size)
+        performance = score_card_array.sum() / score_card_array.size
+        t1 = time.time()
+        total = t1 - t0
+        print(f'Done! ({total} s)\nPerformance = {performance}')
 
 
 def main():
