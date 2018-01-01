@@ -57,8 +57,7 @@ def train_neural_network(neural_network, output_nodes, training_data_path):
     # Load mnist training data from CSV file into list:
     with open(training_data_path, 'r') as training_data_file:
         training_data_file_reader = csv.reader(training_data_file, delimiter=',')
-        training_data_list = list(training_data_file_reader)
-        for record in training_data_list:
+        for record in training_data_file_reader:
             # Scale and shift the inputs:
             inputs = prepare_inputs(record)
             # Create target output values (all 0.01 expect desired label which is 0.99):
