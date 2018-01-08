@@ -9,7 +9,8 @@ from first_neural_network import NeuralNetwork, prepare_inputs
 def query_neural_net(img_path):
     img_array = misc.imread(img_path, flatten=True)
     img_data = 255.0 - img_array.reshape(784)
-    #img_data = prepare_inputs(img_data)
+    img_data = np.insert(img_data, 0, 0.0)
+    img_data = prepare_inputs(img_data)
     neural_network = NeuralNetwork()
     neural_network.load_weights()
     result = np.argmax(neural_network.query(img_data))
